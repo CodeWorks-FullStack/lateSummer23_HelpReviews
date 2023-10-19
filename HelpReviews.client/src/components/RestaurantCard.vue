@@ -8,6 +8,11 @@
                 <span><i class="mdi mdi-heart"></i> recent visits</span>
                 <span><i class="mdi mdi-note"></i> reports</span>
             </div>
+            <div class="text-end">
+              <router-link :to="{name: 'Restaurant Details', params: {restaurantId: restaurant.id}}">
+                <button class="btn btn-primary">See Reports <i class="mdi mdi-arrow-right"></i></button>
+              </router-link>
+            </div>
         </div>
     </div>
 </template>

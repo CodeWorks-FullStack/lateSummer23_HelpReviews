@@ -22,8 +22,8 @@ public class RestaurantRepository : IRepository<Restaurant, int>
        (@name, @imgUrl, @description, @creatorId);
 
        SELECT
-r.*,
-a.*
+            r.*,
+            a.*
        FROM restaurants r
        JOIN accounts a ON a.id = r.creatorId
        WHERE r.id = LAST_INSERT_ID()
@@ -44,12 +44,16 @@ a.*
     public List<Restaurant> Get()
     {
         string sql = @"
-        SELECT
-        r.*,
-        a.*
-        FROM restaurants r
-        JOIN accounts a ON a.id = r.creatorId
+       SELECT
+            restaurants.*,
+            COUNT(reports.id) AS reportCount,
+            accounts.*
+        FROM restaurants
+        LEFT JOIN reports ON  reports.restaurantId = restaurants.id
+        JOIN accounts ON accounts.id = restaurants.creatorId
+        GROUP BY (restaurants.id)
         ;";
+        
         List<Restaurant> restaurants = _db.Query<Restaurant, Profile, Restaurant>(sql, (restaurant, profile) =>
         {
             restaurant.Creator = profile;
@@ -62,11 +66,14 @@ a.*
     {
         string sql = @"
         SELECT
-        r.*,
-        a.*
-        FROM restaurants r
-        JOIN accounts a ON a.id = r.creatorId
-        WHERE r.id = @id
+            restaurants.*,
+            COUNT(reports.id) AS reportCount,
+            accounts.*
+        FROM restaurants
+        JOIN accounts ON accounts.id = restaurants.creatorId
+        LEFT JOIN reports ON reports.restaurantId = restaurants.id
+        WHERE restaurants.id = @id
+        GROUP BY (restaurants.id)
         ;";
         Restaurant restaurant = _db.Query<Restaurant, Profile, Restaurant>(sql, (restaurant, profile) =>
         {

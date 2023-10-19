@@ -5,11 +5,14 @@ namespace HelpReviews.Controllers;
 public class RestaurantsController : ControllerBase
 {
     private readonly RestaurantsService _restaurantsService;
+    private readonly ReportsService _reportsService;
 
     private readonly Auth0Provider _auth;
-    public RestaurantsController(RestaurantsService restaurantsService, Auth0Provider auth)
+
+    public RestaurantsController(RestaurantsService restaurantsService, Auth0Provider auth, ReportsService reportsService)
     {
         _restaurantsService = restaurantsService;
+        _reportsService = reportsService;
         _auth = auth;
     }
 
@@ -46,13 +49,28 @@ public class RestaurantsController : ControllerBase
     }
 
     [HttpGet("{restaurantId}")]
-    public ActionResult<Restaurant> GetById(int restaurantId)
+    public async Task<ActionResult<Restaurant>> GetById(int restaurantId)
     {
         try
         {
-            Restaurant restaurant = _restaurantsService.GetById(restaurantId);
+            Account userInfo = await _auth.GetUserInfoAsync<Account>(HttpContext);
+            Restaurant restaurant = _restaurantsService.GetById(restaurantId, userInfo?.Id);
             return Ok(restaurant);
         }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+
+    [HttpGet("{restaurantId}/reports")]
+    public async Task<ActionResult<List<Report>>> GetRestaurantReports(int restaurantId){
+        try
+        {
+            Account userInfo =await _auth.GetUserInfoAsync<Account>(HttpContext);
+            List<Report> reports = _reportsService.GetRestaurantReports(restaurantId, userInfo?.Id);
+            return Ok(reports);
+        }   
         catch (Exception e)
         {
             return BadRequest(e.Message);

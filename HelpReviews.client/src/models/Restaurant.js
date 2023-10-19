@@ -7,6 +7,7 @@ export class Restaurant {
         this.imgUrl = data.imgUrl
         this.description = data.description
         this.visits = data.visits
+        this.reportCount = data.reportCount
         this.isShutdown = data.isShutdown
         this.creatorId = data.creatorId
         this.creator = new Profile(data.creator)

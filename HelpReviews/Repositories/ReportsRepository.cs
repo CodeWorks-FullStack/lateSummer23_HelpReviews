@@ -17,7 +17,24 @@ public class ReportsRepository : IRepository<Report, int>
 
     public Report Create(Report newData)
     {
-        throw new NotImplementedException();
+      string sql = @"
+      INSERT INTO reports
+      (title, body, pictureOfDisgust, creatorId, restaurantId)
+      VALUES
+      (@title, @body, @pictureOfDisgust, @creatorId, @restaurantId);
+
+      SELECT
+        reports.*,
+        accounts.*
+      FROM reports
+      JOIN accounts ON accounts.id = reports.creatorId
+      WHERE reports.id = LAST_INSERT_ID()
+      ;";
+      Report report = _db.Query<Report, Profile, Report>(sql, (report, profile)=>{
+        report.Creator = profile;
+        return report;
+      }, newData).FirstOrDefault();
+      return report;
     }
 
     public int Delete(int id)

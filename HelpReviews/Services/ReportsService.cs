@@ -16,6 +16,12 @@ public class ReportsService
         _restaurantService = restaurantService;
     }
 
+    internal Report CreateReport(Report reportData)
+    {
+      Report report = _repo.Create(reportData);
+      return report;
+    }
+
     internal List<Report> GetRestaurantReports(int restaurantId, string userId)
     {
       Restaurant restaurant = _restaurantService.GetById(restaurantId, userId);

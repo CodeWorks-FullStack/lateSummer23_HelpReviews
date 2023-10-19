@@ -24,9 +24,9 @@
 
       </div>
     </div>
-    <section class="row mt-2">
+    <section class="row my-4">
 
-      <div v-for="report in reports" :key="report.id" class="col-12 bg-light elevation-5">
+      <div v-for="report in reports" :key="report.id" class="col-12 bg-light elevation-5 p-2">
       <ReportCard :report="report"/>
       </div>
 

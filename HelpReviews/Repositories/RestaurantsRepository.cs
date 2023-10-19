@@ -52,6 +52,7 @@ public class RestaurantRepository : IRepository<Restaurant, int>
         LEFT JOIN reports ON  reports.restaurantId = restaurants.id
         JOIN accounts ON accounts.id = restaurants.creatorId
         GROUP BY (restaurants.id)
+        ORDER BY (restaurants.visits) DESC
         ;";
         
         List<Restaurant> restaurants = _db.Query<Restaurant, Profile, Restaurant>(sql, (restaurant, profile) =>

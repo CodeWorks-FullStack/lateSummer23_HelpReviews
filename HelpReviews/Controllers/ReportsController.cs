@@ -19,5 +19,19 @@ public class ReportsController : ControllerBase
         _auth = auth;
     }
 
-    
+    [HttpPost]
+    [Authorize]
+    public async Task<ActionResult<Report>> CreateReport([FromBody] Report reportData){
+        try
+        {
+            Account userInfo = await _auth.GetUserInfoAsync<Account>(HttpContext);
+            reportData.CreatorId = userInfo.Id;
+            Report report = _reportsService.CreateReport(reportData);
+            return Ok(report);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
 }

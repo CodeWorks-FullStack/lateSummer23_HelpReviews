@@ -26,12 +26,17 @@ public class RestaurantsService
         return restaurants;
     }
 
-    internal Restaurant GetById(int restaurantId, string userId)
+    internal Restaurant GetById(int restaurantId, string userId, bool increaseVisits = false)
     {
         Restaurant restaurant = _repo.GetById(restaurantId);
         if (restaurant == null) throw new Exception($"Invalid id {restaurantId}");
 
         if( restaurant.IsShutdown == true && restaurant.CreatorId != userId) throw new Exception($"No {restaurant.Name} for you!");
+        // NOTE increase visits is passed from the controller to increase the visits of the restaurant
+        // the or keeps the restaurant creator from inflating their own visit count
+        if(increaseVisits && restaurant.CreatorId != userId){
+        this.IncreaseVisits(restaurant);
+        }
         return restaurant;
     }
 
@@ -48,4 +53,11 @@ public class RestaurantsService
         return original;
 
     }
+
+    internal void IncreaseVisits( Restaurant restaurant){
+        restaurant.Visits++;
+        _repo.Update(restaurant);
+    }
+
+
 }

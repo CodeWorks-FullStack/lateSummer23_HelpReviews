@@ -70,3 +70,14 @@ GROUP BY (restaurants.id);
         LEFT JOIN reports ON  reports.restaurantId = restaurants.id
         JOIN accounts ON accounts.id = restaurants.creatorId
         GROUP BY (restaurants.id);
+
+
+ SELECT
+    restaurants.*,
+    COUNT(reports.id) AS reportCount,
+    accounts.*
+FROM restaurants
+LEFT JOIN reports ON  reports.restaurantId = restaurants.id
+JOIN accounts ON accounts.id = restaurants.creatorId
+GROUP BY (restaurants.id)
+ORDER BY (restaurants.visits) DESC

@@ -1,5 +1,10 @@
 <template>
   <div class="container-fluid">
+
+    <section class="row">
+      <ReportForm/>
+    </section>
+
     <section class="row">
 
       <div class="col-4 my-3" v-for="r in restaurants" :key=r.id>
@@ -14,27 +19,29 @@
 import { AppState } from '../AppState.js'
 import { computed, onMounted } from 'vue'
 import { restaurantsService } from '../services/RestaurantsService.js'
+import ReportForm from '../components/ReportForm.vue'
+import { logger } from '../utils/Logger.js'
+import Pop from '../utils/Pop.js'
 
 export default {
-  setup() {
-
-    async function getRestaurants() {
-      try {
-        await restaurantsService.getRestaurants()
-      } catch (error) {
-        logger.error(error)
-        Pop.toast(error.message, 'error')
-      }
-    }
-
-    onMounted(() => {
-      getRestaurants()
-    })
-
-    return {
-      restaurants: computed(() => AppState.restaurants),
-    }
-  }
+    setup() {
+        async function getRestaurants() {
+            try {
+                await restaurantsService.getRestaurants();
+            }
+            catch (error) {
+                logger.error(error);
+                Pop.toast(error.message, 'error');
+            }
+        }
+        onMounted(() => {
+            getRestaurants();
+        });
+        return {
+            restaurants: computed(() => AppState.restaurants),
+        };
+    },
+    components: { ReportForm }
 }
 </script>
 
